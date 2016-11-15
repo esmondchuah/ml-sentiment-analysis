@@ -240,9 +240,9 @@ http://t.cn/R2WxBO3 O
 # O
 一心一意 O
 ， O
-易 B-very_positive
-烊 I-very_positive
-千玺 I-very_positive
+易 B-positive
+烊 I-positive
+千玺 I-positive
 # O
 [ O
 心 O
@@ -293,11 +293,11 @@ http://t.cn/RZkcUcv O
 ！ O
 http://t.cn/RtVlWcU O
 @ O
-TFBOYS B-very_positive
-- I-very_positive
-易 I-very_positive
-烊 I-very_positive
-千玺 I-very_positive
+TFBOYS B-positive
+- I-positive
+易 I-positive
+烊 I-positive
+千玺 I-positive
 10/6 O
 [ O
 心 O
@@ -526,7 +526,7 @@ http://t.cn/RVUl5Pq O
 榜 O
 # O
 为 O
-张靓颖 B-very_positive
+张靓颖 B-positive
 的 O
 新歌 O
 http://t.cn/RqFvkxM O
@@ -1284,8 +1284,8 @@ http://t.cn/RcSYU1q O
 都 O
 能 O
 在 O
-nili B-very_negative
-凡 I-very_negative
+nili B-negative
+凡 I-negative
 的 O
 照片 O
 里 O
@@ -1352,22 +1352,22 @@ ali O
 太阳 O
 ] O
 手 O
-李炜 B-very_positive
+李炜 B-positive
 继 O
 个人 O
 首张 O
 音乐 O
 大碟 O
 《 O
-造梦者 B-very_positive
-Dreamer I-very_positive
+造梦者 B-positive
+Dreamer I-positive
 》 O
 之后 O
 ， O
 全新 O
 专辑 O
 《 O
-脱胎换骨 B-very_positive
+脱胎换骨 B-positive
 》 O
 即将 O
 发行 O
@@ -1377,7 +1377,7 @@ Dreamer I-very_positive
 真实 O
 内心 O
 ， O
-李炜 B-very_positive
+李炜 B-positive
 尝试 O
 在 O
 音乐 O
@@ -1394,10 +1394,10 @@ Dreamer I-very_positive
 情歌 O
 主打 O
 《 O
-只是 B-very_positive
-怀旧 I-very_positive
-不算 I-very_positive
-怀念 I-very_positive
+只是 B-positive
+怀旧 I-positive
+不算 I-positive
+怀念 I-positive
 》 O
 深情 O
 上线 O
@@ -2215,7 +2215,7 @@ http://t.cn/RVbI2jI（来自财新网客户端） O
 噢 O
 耶 O
 ] O
-湾湾 B-very_positive
+湾湾 B-positive
 第三十六 O
 天 O
 [ O
@@ -2352,7 +2352,7 @@ A I-neutral
 多 O
 
 爱上 O
-蔡康永 B-very_positive
+蔡康永 B-positive
 [ O
 爱心 O
 ] O
@@ -2866,7 +2866,7 @@ RVqoD8T O
 好事儿 O
 ， O
 喜欢 O
-赵丽颖 B-very_positive
+赵丽颖 B-positive
 记忆 O
 被 O
 掏空 O
@@ -3231,42 +3231,42 @@ http://t.cn/RVyJfjy O
 
 想 O
 吃 O
-学校 B-very_positive
-饭堂 I-very_positive
-三楼 I-very_positive
+学校 B-positive
+饭堂 I-positive
+三楼 I-positive
 的 O
-湿 B-very_positive
-炒河 I-very_positive
+湿 B-positive
+炒河 I-positive
 ， O
-铁板 B-very_positive
-河 I-very_positive
+铁板 B-positive
+河 I-positive
 ， O
-紫菜 B-very_positive
-包饭 I-very_positive
+紫菜 B-positive
+包饭 I-positive
 ， O
-韩国 B-very_positive
-拌 I-very_positive
-饭 I-very_positive
+韩国 B-positive
+拌 I-positive
+饭 I-positive
 ， O
-南门 B-very_positive
-陕西 I-very_positive
-面馆 I-very_positive
+南门 B-positive
+陕西 I-positive
+面馆 I-positive
 的 O
-油泼 B-very_positive
-棍 I-very_positive
-棍面 I-very_positive
+油泼 B-positive
+棍 I-positive
+棍面 I-positive
 ， O
-烤鱼 B-very_positive
+烤鱼 B-positive
 ， O
 彩蝶 B-positive
 轩 I-positive
 的 O
-奶 B-very_positive
-香片 I-very_positive
-、 I-very_positive
-葡塔 I-very_positive
+奶 B-positive
+香片 I-positive
+、 I-positive
+葡塔 I-positive
 ， O
-韩国 B-very_positive
+韩国 B-positive
 料理 O
 的 O
 泡菜 O
@@ -3458,7 +3458,7 @@ ML O
 。 O
 
 # O
-李纯 B-very_positive
+李纯 B-positive
 软萌 O
 杀 O
 # O
@@ -3466,14 +3466,14 @@ ML O
 反正 O
 是 O
 喜欢 O
-李纯 B-very_positive
+李纯 B-positive
 软萌 O
 杀 O
 幽默 O
 。 O
 , O
 对 O
-李纯 B-very_positive
+李纯 B-positive
 软萌 O
 杀 O
 浓厚 O
@@ -5600,9 +5600,9 @@ Kitty O
 
 @TFBOYS O
 - O
-易 B-very_positive
-烊 I-very_positive
-千玺 I-very_positive
+易 B-positive
+烊 I-positive
+千玺 I-positive
 已经 O
 在 O
 # O
@@ -6166,7 +6166,7 @@ need O
 
 @TFBOYS O
 - O
-王俊凯 B-very_positive
+王俊凯 B-positive
 已经 O
 在 O
 # O
@@ -6297,8 +6297,8 @@ RVItIvL O
 心情 O
 十分 O
 喜悦 O
-女儿 B-very_positive
-女婿 B-very_positive
+女儿 B-positive
+女婿 B-positive
 的 O
 精心安排 O
 倍感 O
@@ -7040,7 +7040,7 @@ http://t.cn/Rcrp17I O
 房间 O
 化妆 O
 ， O
-迪斯尼乐园 B-very_positive
+迪斯尼乐园 B-positive
 我们 O
 来 O
 啦 O
@@ -7066,7 +7066,7 @@ http://t.cn/z8A5pJe O
 跪 O
 着 O
 看 O
-pellek B-very_positive
+pellek B-positive
 唱歌 O
 
 靓颖 B-positive
@@ -7570,8 +7570,8 @@ cn O
 RV4V4zt O
 
 【 O
-宁芬堡 B-very_positive
-宫 I-very_positive
+宁芬堡 B-positive
+宫 I-positive
 】 O
 慕尼黑 B-positive
 的 O
@@ -8733,8 +8733,8 @@ lay O
 
 我 O
 的 O
-千玺 B-very_positive
-宝宝 I-very_positive
+千玺 B-positive
+宝宝 I-positive
 晚安 O
 ， O
 虽然 O
@@ -8761,8 +8761,8 @@ lay O
 我 O
 刚用 O
 @ O
-滴滴 B-very_positive
-出行 I-very_positive
+滴滴 B-positive
+出行 I-positive
 了 O
 ， O
 感觉 O
@@ -8823,18 +8823,18 @@ http://t.cn/RVUlsE9 O
 # O
 我 O
 为 O
-吴亦凡 B-very_positive
+吴亦凡 B-positive
 拉票 O
 # O
 # O
-微博 B-very_positive
+微博 B-positive
 电影 O
 King O
 和 O
 Queen O
 # O
 # O
-吴亦凡 B-very_positive
+吴亦凡 B-positive
 # O
 # O
 吴亦凡 B-positive
@@ -9283,7 +9283,7 @@ ali O
 。 O
 
 @ O
-汪东城 B-very_positive
+汪东城 B-positive
 已经 O
 在 O
 # O
@@ -9390,7 +9390,7 @@ Nissyoku B-positive
 妙不可言 O
 。 O
 
-Mialdives B-very_positive
+Mialdives B-positive
 is O
 my O
 dream O
@@ -9438,7 +9438,7 @@ place O
 。 O
 
 # O
-张俪 B-very_positive
+张俪 B-positive
 帅 O
 过头 O
 # O
@@ -9913,11 +9913,11 @@ QQ O
 是 O
 什么 O
 学校 O
-陕西省 B-very_negative
-宝鸡市 I-very_negative
-高新区 I-very_negative
-凉泉 I-very_negative
-小学 I-very_negative
+陕西省 B-negative
+宝鸡市 I-negative
+高新区 I-negative
+凉泉 I-negative
+小学 I-negative
 这是 O
 学校 O
 吗 O
@@ -10864,7 +10864,7 @@ Ipad B-neutral
 好 O
 受伤 O
 】 O
-白云路 B-very_negative
+白云路 B-negative
 这棵 O
 大树 O
 没找 O
@@ -12474,7 +12474,7 @@ QQ B-positive
 http://t.cn/RV44UoX O
 
 # O
-赵丽颖 B-very_positive
+赵丽颖 B-positive
 记忆 O
 被 O
 掏空 O
@@ -12483,9 +12483,9 @@ http://t.cn/RV44UoX O
 不是 O
 觉得 O
 喜欢 O
-赵丽颖 B-very_positive
+赵丽颖 B-positive
 喜欢 O
-赵丽颖 B-very_positive
+赵丽颖 B-positive
 女神 O
 你 O
 演 O
@@ -12498,7 +12498,7 @@ http://t.cn/RV44UoX O
 在 O
 这里 O
 喜欢 O
-赵丽颖 B-very_positive
+赵丽颖 B-positive
 
 天津 B-neutral
 意式 O
@@ -12615,7 +12615,7 @@ http://t.cn/RVfHal9 O
 # O
 好 O
 喜欢 O
-张小凡 B-very_positive
+张小凡 B-positive
 啊 O
 ， O
 总是 O
@@ -12659,7 +12659,7 @@ http://t.cn/RVfHal9 O
 外地人 O
 滚 O
 出 O
-上海 B-very_negative
+上海 B-negative
 http://t.cn/RVbGi7y O
 
 # O
@@ -12711,9 +12711,9 @@ SWIN B-positive
 他们 O
 
 @ O
-M B-very_positive
-鹿 I-very_positive
-M I-very_positive
+M B-positive
+鹿 I-positive
+M I-positive
 已经 O
 在 O
 # O
@@ -12917,8 +12917,8 @@ http://t.cn/RqxNEdX O
 这组 O
 可爱 O
 的 O
-插座 B-very_positive
-贴纸 I-very_positive
+插座 B-positive
+贴纸 I-positive
 吧 O
 。 O
 它 O
@@ -13220,7 +13220,7 @@ http://t.cn/RcTPP2S O
 你们 O
 在 O
 说 O
-炎亚纶 B-very_negative
+炎亚纶 B-negative
 整容 O
 的 O
 时候 O
@@ -14341,7 +14341,7 @@ app O
 http://t.cn/RcSYU1q O
 
 # O
-赵丽颖 B-very_positive
+赵丽颖 B-positive
 记忆 O
 被 O
 掏空 O
@@ -14349,7 +14349,7 @@ http://t.cn/RcSYU1q O
 我 O
 喜欢 O
 ， O
-赵丽颖 B-very_positive
+赵丽颖 B-positive
 好赞 O
 真是太 O
 好 O
@@ -14910,8 +14910,8 @@ http://t.cn/RV5bqRj O
 今天 O
 的 O
 刀音 B-positive
-上海 B-very_positive
-虹桥 I-very_positive
+上海 B-positive
+虹桥 I-positive
 发布会 O
 ！ O
 ！ O
@@ -14974,7 +14974,7 @@ http://t.cn/RV5bqRj O
 喽 O
 【 O
 五盒 O
-青汁 B-very_positive
+青汁 B-positive
 血沉 O
 下降 O
 35个指标 O
@@ -14984,7 +14984,7 @@ http://t.cn/RV5bqRj O
 亲眼 O
 见证 O
 一下 O
-青汁 B-very_positive
+青汁 B-positive
 为 O
 阿姨 O
 带来 O
@@ -15059,9 +15059,9 @@ http://t.cn/RV5bqRj O
 ！ O
 ！ O
 ！ O
-贪吃蛇 B-very_positive
-大 I-very_positive
-作战 I-very_positive
+贪吃蛇 B-positive
+大 I-positive
+作战 I-positive
 ， O
 全新 O
 玩法 O
@@ -15525,8 +15525,8 @@ pushme O
 。 O
 
 # O
-青云 B-very_positive
-志 I-very_positive
+青云 B-positive
+志 I-positive
 # O
 我 O
 每个 O
@@ -18735,8 +18735,8 @@ http://t.cn/RVUpY6O O
 http://t.cn/RcDQrs7 O
 
 # O
-冯 B-very_negative
-建宇 I-very_negative
+冯 B-negative
+建宇 I-negative
 周五 O
 座谈会 O
 # O
@@ -18942,9 +18942,9 @@ http://t.cn/RV4UqmP，去下单→http://t.cn/RV4UqEi O
 的 O
 游戏 O
 ， O
-贪吃蛇 B-very_positive
-大 I-very_positive
-作战 I-very_positive
+贪吃蛇 B-positive
+大 I-positive
+作战 I-positive
 ， O
 哈哈哈 O
 ！ O
