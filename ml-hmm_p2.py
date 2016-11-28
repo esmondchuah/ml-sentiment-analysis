@@ -1,6 +1,6 @@
 from Data_processor import Data_processor
 
-possible_states = ["O","B-positive","B-negative","B-neutral","I-negative","I-positive","B-neutral"]
+possible_states = ["O","B-positive","I-positive","B-neutral","I-neutral","B-negative","I-negative"]
 
 def emis_prob(a,b,Data):
     # if a not in possible_states:

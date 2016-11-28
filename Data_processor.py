@@ -7,4 +7,6 @@ class Data_processor:
             for j in i.split("\n"):
                 if j != "":
                     sentence.append(j)
-            self.data.append(sentence)
+            if len(sentence) > 0:
+                self.data.append(sentence)
+        self.file.close()
