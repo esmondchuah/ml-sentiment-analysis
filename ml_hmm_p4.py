@@ -3,8 +3,6 @@ from Data_processor import Data_processor
 possible_states = ["O","B-positive","I-positive","B-neutral","I-neutral","B-negative","I-negative"]
 
 def emis_prob(a,b,Data,data_dict):
-    # if a not in possible_states:
-    #     return "Invalid input"
     if (a,b) in data_dict.keys():
         return data_dict[(a,b)]
     else:
@@ -27,8 +25,6 @@ def emis_prob(a,b,Data,data_dict):
         return result
 
 def trans_prob(a,b,Data,data_dict):
-    # if a not in possible_states and b not in possible_states:
-    #     return "Invalid input"
     if (a,b) in data_dict.keys():
         return data_dict[(a,b)]
     else:
@@ -61,74 +57,67 @@ def trans_prob(a,b,Data,data_dict):
         data_dict[(a,b)] = result
         return result
 
-def get_Ysequence(tweet,Data):
-    trans_dict = {}
-    emis_dict = {}
-    score_dict = {}
-    return viterbi_end(tweet,emis_dict,trans_dict,Data,score_dict)
-
-def viterbi_label(inpath,Data):
-    trans_dict = {}
-    emis_dict = {}
-    outpath = inpath.rsplit("\\",maxsplit=1)[0] + "\\dev.p3.out"
-    #TO DO: implement path for MACOS
-    outfile = open(outpath,'w',encoding='utf8')
-    indata = Data_processor(inpath)
-    for tweet in indata.data:
-        score_dict = {}
-        opYseq = viterbi_end(tweet,emis_dict,trans_dict,Data,score_dict)
-        for i in range(len(opYseq[0].split(" "))):
-            output = tweet[i] + " " + opYseq[0].split(" ")[i] + "\n"
-            outfile.write(output)
-        outfile.write("\n")
-    outfile.close()
-
-def viterbi_start(sequence,i,emis_dict,trans_dict,Data,score_dict):
+def viterbiTopK_start(sequence,i,emis_dict,trans_dict,Data,score_dict):
     if (len(sequence),i) in score_dict.keys():
         return score_dict[(len(sequence),i)]
     else:
         score = trans_prob("start",i,Data,trans_dict)*emis_prob(i,sequence[-1],Data,emis_dict)
-        # print((i,score))
-        score_dict[(len(sequence),i)] = (i,score)
-        return (i,score)
+        score_dict[(len(sequence),i)] = [(i,score)]
+        return [(i,score)]
 
-def viterbi_end(sequence,emis_dict,trans_dict,Data,score_dict):
-    maxY = ""
-    maxScore = 0
+def viterbiTopk_end(sequence,k,emis_dict,trans_dict,Data,score_dict):
+    TopKlist = []
     for i in possible_states:
-        previous_max = viterbiRecursive(sequence,i,emis_dict,trans_dict,Data,score_dict)
-        score = previous_max[1]*trans_prob(i,"stop",Data,trans_dict)
-        print((previous_max[0],score))
-        if score > maxScore:
-            maxY = previous_max[0]
-            maxScore = score
+        previous_list = viterbiTopkRecursive(sequence,k,i,emis_dict,trans_dict,Data,score_dict)
+        print(previous_list,i)
+        for j in previous_list:
+            score = j[1]*trans_prob(i,"stop",Data,trans_dict)
+            if score != 0:
+                if len(TopKlist) < k:
+                    TopKlist.append((j[0],score))
+                else:
+                    index = 0
+                    for l in range(1,len(TopKlist)):
+                        if TopKlist[l][1] < TopKlist[index][1]:
+                            index = l
+                    if score > TopKlist[index][1]:
+                        TopKlist[index] = (j[0],score)
+        # print((previous_max[0],score))
     # print((maxY,maxScore))
-    return (maxY,maxScore)
+    return TopKlist
 
-def viterbiRecursive(sequence,i,emis_dict,trans_dict,Data,score_dict):
+
+def viterbiTopkRecursive(sequence,k,i,emis_dict,trans_dict,Data,score_dict):
     if (len(sequence),i) in score_dict.keys():
         return score_dict[(len(sequence),i)]
     else:
-        maxY = ""
-        maxScore = 0
+        K_list = []
         for j in possible_states:
             if len(sequence) == 2:
-                previous_max = viterbi_start(sequence[:-1],j,emis_dict,trans_dict,Data,score_dict)
+                previous_list = viterbiTopK_start(sequence[:-1],j,emis_dict,trans_dict,Data,score_dict)
             else:
-                previous_max = viterbiRecursive(sequence[:-1],j,emis_dict,trans_dict,Data,score_dict)
-            score = previous_max[1]*trans_prob(j,i,Data,trans_dict)*emis_prob(i,sequence[-1],Data,emis_dict)
-            if score > maxScore:
-                maxY = previous_max[0] + " " + i
-                maxScore = score
+                previous_list = viterbiTopkRecursive(sequence[:-1],k,j,emis_dict,trans_dict,Data,score_dict)
+            for z in previous_list:
+                score = z[1]*trans_prob(j,i,Data,trans_dict)*emis_prob(i,sequence[-1],Data,emis_dict)
+                Yseq = z[0] + " " + i
+                if score != 0:
+                    if len(K_list) < k:
+                        K_list.append((Yseq,score))
+                    else:
+                        K_index = 0
+                        for l in range(1,len(K_list)):
+                            if K_list[l][1] < K_list[K_index][1]:
+                                K_index = l
+                        if score > K_list[K_index][1]:
+                            K_list[K_index] = (Yseq,score)
         # print((maxY,maxScore,len(sequence),i))
-        score_dict[(len(sequence),i)] = (maxY,maxScore)
-        return (maxY,maxScore)
-
+        # print(K_list)
+        score_dict[(len(sequence),i)] = K_list
+        return K_list
 
 EN = Data_processor("C:\\Users\\Loo Yi\\Desktop\\ml-project\\EN\\train")
-EN_in = "C:\\Users\\Loo Yi\\Desktop\\ml-project\\EN\\dev.in"
-# testtweet = ["New","Year",",","New","Tech","Writers","Gathering","http://nblo.gs/cR1A1"]
-# print(get_Ysequence(testtweet,EN))
-# for i in possible_states:
-#     print (trans_prob(i,'stop',EN,{}))
-viterbi_label(EN_in,EN)
+testtweet = ["New","Year",",","New","Tech","Writers","Gathering","http://nblo.gs/cR1A1"]
+trans_dict = {}
+emis_dict = {}
+score_dict = {}
+print(viterbiTopk_end(testtweet,5,emis_dict,trans_dict,EN,score_dict))
