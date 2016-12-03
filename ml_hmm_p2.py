@@ -3,8 +3,6 @@ from Data_processor import Data_processor
 possible_states = ["O","B-positive","I-positive","B-neutral","I-neutral","B-negative","I-negative"]
 
 def emis_prob(a,b,Data):
-    # if a not in possible_states:
-    #     return "Invalid input"
     countAB = 0
     countA = 1
     countB = 0
@@ -20,31 +18,26 @@ def emis_prob(a,b,Data):
         return float(1/countA)
     return float(countAB/countA)
 
-
 def optimalY_bycompare(b,Data):
     bestYscore = 0
     optimalY = ""
-    # Y_d ={}
-    # sumz = 0
     for i in possible_states:
         yscore = emis_prob(i,b,Data)
-        # sumz += yscore
-        # Y_d[i] = yscore
         if yscore > bestYscore:
             bestYscore = yscore
             optimalY = i
-    # print("optimalY : " + optimalY)
-    # print("sum = "+str(sumz))
-    # print(b + " " + str(Y_d))
     return optimalY
 
-def label_dev_in(Data,inpath):
+def label_dev_in(Datapath,inpath,os):
     infile = open(inpath,'r',encoding='utf8')
     Y_dict = {}
-    outpath = inpath.rsplit("\\",maxsplit=1)[0] + "\\dev.p2.out"
-    #TO DO: implement path for MACOS
+    Data = Data_processor(Datapath)
+    if os == "W":
+        outpath = inpath.rsplit("\\",maxsplit=1)[0] + "\\dev.p2.out"
+    else:
+        outpath = inpath.rsplit("/",maxsplit=1)[0] + "/dev.p2.out"
     outfile = open(outpath,'w',encoding='utf8')
-    # print(outpath)
+    total = len(indata.data)
     for i in infile.read().split("\n"):
         if i == "":
             outfile.write("\n")
@@ -55,15 +48,15 @@ def label_dev_in(Data,inpath):
                 optimalY = optimalY_bycompare(i,Data)
                 Y_dict[i] = optimalY
             output = i + " " + optimalY + "\n"
-            # print(output)
             outfile.write(output)
+            sys.stdout.write(inpath.rsplit(str(tweet)"/"+str(total)+ " done")
+            sys.stdout.flush()
     infile.close()
     outfile.close()
 
 
+if len(sys.argv)< 4:
+    print("Not enought arguments pls input in order:(input data set path, Traning file path, Windows('W') or Linux/Mac('L'))")
+    sys.exit()
 
-EN = Data_processor("C:\\Users\\Loo Yi\\Desktop\\ml-project\\EN\\train")
-# print(str(emis_prob('O','a',EN)) + " " + str(emis_prob('O','I-negative',EN)))
-# optimalY_bycompare("a",EN)
-EN_in = "C:\\Users\\Loo Yi\\Desktop\\ml-project\\EN\\dev.in"
-label_dev_in(EN,EN_in)
+label_dev_in(sys.argv[1],sys.argv[2],sys.argv[3])
