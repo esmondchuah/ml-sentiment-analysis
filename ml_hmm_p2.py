@@ -1,4 +1,5 @@
 from Data_processor import Data_processor
+import sys
 
 possible_states = ["O","B-positive","I-positive","B-neutral","I-neutral","B-negative","I-negative"]
 
@@ -28,7 +29,7 @@ def optimalY_bycompare(b,Data):
             optimalY = i
     return optimalY
 
-def label_dev_in(Datapath,inpath,os):
+def label_dev_in(inpath,Datapath,os):
     infile = open(inpath,'r',encoding='utf8')
     Y_dict = {}
     Data = Data_processor(Datapath)
@@ -37,7 +38,7 @@ def label_dev_in(Datapath,inpath,os):
     else:
         outpath = inpath.rsplit("/",maxsplit=1)[0] + "/dev.p2.out"
     outfile = open(outpath,'w',encoding='utf8')
-    total = len(indata.data)
+    # total = len(infile.read().split("\n"))
     for i in infile.read().split("\n"):
         if i == "":
             outfile.write("\n")
@@ -49,8 +50,7 @@ def label_dev_in(Datapath,inpath,os):
                 Y_dict[i] = optimalY
             output = i + " " + optimalY + "\n"
             outfile.write(output)
-            sys.stdout.write(inpath.rsplit(str(tweet)"/"+str(total)+ " done")
-            sys.stdout.flush()
+            # print(inpath.rsplit(str(tweet)+"/"+str(total)+ " done"))
     infile.close()
     outfile.close()
 

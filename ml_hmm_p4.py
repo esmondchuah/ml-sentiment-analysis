@@ -78,8 +78,8 @@ def viterbiTopk_kthlabel(inpath,Datapath,k,os):
             output = indata.data[tweet][i] + " " + Kth_seq[0].split(" ")[i] + "\n"
             outfile.write(output)
         outfile.write("\n")
-        print(inpath.rsplit("\\",maxsplit=2)[1] + " "+str(tweet+1)+"/"+str(total)+ " done")
-    print(inpath.rsplit("\\",maxsplit=2)[1] + " done!")
+        print(str(tweet+1)+"/"+str(total)+ " done")
+    print("done!")
     outfile.close()
 
 def viterbiTopK_start(sequence,i,emis_dict,trans_dict,Data,score_dict):
@@ -154,4 +154,4 @@ if len(sys.argv)< 5:
     print("Not enought arguments pls input in order:(kvalue,input data set path, Traning file path, Windows('W') or Linux/Mac('L'))")
     sys.exit()
 
-viterbiTopk_kthlabel(sys.argv[2],sys.argv[3],sys.argv[1],sys.argv[4])
+viterbiTopk_kthlabel(sys.argv[2],sys.argv[3],int(sys.argv[1]),sys.argv[4])
