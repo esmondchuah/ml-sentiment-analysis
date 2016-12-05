@@ -99,58 +99,58 @@ def viterbi_label(dev_datapath, training_datapath, os):
     print("Labelling completed!")
     outfile.close()
 
-def viterbi_start(sentence, state, emis_dict, trans_dict, training_data, score_dict):
-    if (len(sentence), state) in score_dict.keys():
-        return score_dict[(len(sentence), state)]
+def viterbi_start(sequence, state, emis_dict, trans_dict, training_data, score_dict):
+    if (len(sequence), state) in score_dict.keys():
+        return score_dict[(len(sequence), state)]
     else:
-        score = trans_prob("start", state, training_data, trans_dict) * emis_prob(state, sentence[-1], training_data, emis_dict)
-        score_dict[(len(sentence), state)] = (state, score)
+        score = trans_prob("start", state, training_data, trans_dict) * emis_prob(state, sequence[-1], training_data, emis_dict)
+        score_dict[(len(sequence), state)] = (state, score)
         return (state, score)
 
-def viterbi_end(sentence, emis_dict, trans_dict, training_data, score_dict):
+def viterbi_end(sequence, emis_dict, trans_dict, training_data, score_dict):
     max_y = ""
     max_score = 0
 
     for state in possible_states:
-        if len(sentence) == 1:
-            previous_max = viterbi_start(sentence, state, emis_dict, trans_dict, training_data, score_dict)
+        if len(sequence) == 1:
+            previous_max = viterbi_start(sequence, state, emis_dict, trans_dict, training_data, score_dict)
         else:
-            previous_max = viterbi_recursive(sentence, state, emis_dict, trans_dict, training_data, score_dict)
+            previous_max = viterbi_recursive(sequence, state, emis_dict, trans_dict, training_data, score_dict)
         score = previous_max[1] * trans_prob(state, "stop", training_data, trans_dict)
         if score > max_score:
             max_y = previous_max[0]
             max_score = score
 
     if max_y == "":
-        previous_O = viterbi_recursive(sentence[:-1], "O", emis_dict, trans_dict, training_data, score_dict)
+        previous_O = viterbi_recursive(sequence[:-1], "O", emis_dict, trans_dict, training_data, score_dict)
         max_y = previous_O[0]
         max_score = 0
     return (max_y, max_score)
 
-def viterbi_recursive(sentence, state, emis_dict, trans_dict, training_data, score_dict):
-    if (len(sentence),state) in score_dict.keys():
-        return score_dict[(len(sentence), state)]
+def viterbi_recursive(sequence, state, emis_dict, trans_dict, training_data, score_dict):
+    if (len(sequence),state) in score_dict.keys():
+        return score_dict[(len(sequence), state)]
     else:
         max_y = ""
         max_score = 0
 
         for prev_state in possible_states:
-            if len(sentence) == 2:
-                previous_max = viterbi_start(sentence[:-1], prev_state, emis_dict, trans_dict, training_data, score_dict)
+            if len(sequence) == 2:
+                previous_max = viterbi_start(sequence[:-1], prev_state, emis_dict, trans_dict, training_data, score_dict)
             else:
-                previous_max = viterbi_recursive(sentence[:-1], prev_state, emis_dict, trans_dict, training_data, score_dict)
-            score = previous_max[1] * trans_prob(prev_state, state, training_data, trans_dict) * emis_prob(state, sentence[-1], training_data, emis_dict)
+                previous_max = viterbi_recursive(sequence[:-1], prev_state, emis_dict, trans_dict, training_data, score_dict)
+            score = previous_max[1] * trans_prob(prev_state, state, training_data, trans_dict) * emis_prob(state, sequence[-1], training_data, emis_dict)
 
             if score > max_score:
                 max_y = previous_max[0] + " " + state
                 max_score = score
 
         if max_y == "":
-            previous_O = viterbi_recursive(sentence[:-1], "O", emis_dict, trans_dict, training_data, score_dict)
+            previous_O = viterbi_recursive(sequence[:-1], "O", emis_dict, trans_dict, training_data, score_dict)
             max_y = previous_O[0] + " " + state
             max_score = 0
 
-        score_dict[(len(sentence), state)] = (max_y, max_score)
+        score_dict[(len(sequence), state)] = (max_y, max_score)
         return (max_y, max_score)
 
 # testtweet = ['"Mike"', 'Update', ':', 'It', 'has', 'been', 'awhile', 'since', 'I', 'spoke', 'of', 'my', 'friend', '"Mike"', '.', '�', 'Things', 'have', 'gotten', 'a', 'little', 'more', 'relaxed', 'sin', '...', 'http://bit.ly/aziC6H']
