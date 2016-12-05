@@ -2,60 +2,68 @@ from Data_processor import Data_processor
 import sys
 sys.setrecursionlimit(2000)
 
-possible_states = ["O","B-positive","I-positive","B-neutral","I-neutral","B-negative","I-negative"]
+possible_states = ["O", "B-positive", "I-positive", "B-neutral", "I-neutral", "B-negative", "I-negative"]
 
-def emis_prob(a,b,Data,data_dict):
-    if (a,b) in data_dict.keys():
-        return data_dict[(a,b)]
+def emis_prob(state, word, training_data, emis_dict):
+    if (state, word) in emis_dict.keys():
+        return emis_dict[(state, word)]
     else:
-        countAB = 0
-        countA = 1
-        countB = 0
-        for tweet in Data.data:
+        count_emission = 0 # count the emission from state to word
+        count_state = 1
+        count_word = 0
+
+        for tweet in training_data:
             for j in range(len(tweet)):
-                if tweet[j].split(" ")[0] == b:
-                    countB +=1
-                if tweet[j].split(" ")[1] == a:
-                    countA +=1
-                    if tweet[j].split(" ")[0] == b:
-                        countAB +=1
-        if countB == 0:
-            result =  float(1/countA)
+                if tweet[j].split(" ")[0] == word:
+                    count_word += 1
+                if tweet[j].split(" ")[1] == state:
+                    count_state += 1
+                    if tweet[j].split(" ")[0] == word:
+                        count_emission += 1
+
+        if count_word == 0:
+            result =  float(1/count_state)
         else:
-            result = float(countAB/countA)
-        data_dict[(a,b)] = result
+            result = float(count_emission/count_state)
+
+        emis_dict[(state, word)] = result
         return result
 
-def trans_prob(a,b,Data,data_dict):
-    if (a,b) in data_dict.keys():
-        return data_dict[(a,b)]
+def trans_prob(state1, state2, training_data, trans_dict):
+    if (state1, state2) in trans_dict.keys():
+        return trans_dict[(state1, state2)]
     else:
-        countAB = 0
-        countA = 0
-        if a == 'start':
-            countA = len(Data.data)
-            for tweet in Data.data:
-                if len(tweet[0].split(" ")) > 1 and tweet[0].split(" ")[1] == b:
-                    countAB += 1
-        elif b == 'stop':
-            for tweet in Data.data:
+        count_transition = 0 # count the transition from state1 to state 2
+        count_state1 = 0
+
+        if state1 == 'start':
+            count_state1 = len(training_data)
+            for tweet in training_data:
+                if len(tweet[0].split(" ")) > 1 and tweet[0].split(" ")[1] == state2:
+                    count_transition += 1
+
+        elif state2 == 'stop':
+            for tweet in training_data:
                 for j in range(len(tweet)):
-                    if len(tweet[j].split(" ")) > 1 and tweet[j].split(" ")[1] == a:
-                        countA +=1
-                        if j == len(tweet)-1:
-                            countAB +=1
-        elif a == 'stop' or b == 'start':
-            data_dict[(a,b)] = 0
+                    if len(tweet[j].split(" ")) > 1  and tweet[j].split(" ")[1] == state1:
+                        count_state1 += 1
+                        if j == len(tweet) - 1:
+                            count_transition += 1
+
+        elif state1 == 'stop' or state2 == 'start':
+            trans_dict[(state1, state2)] = 0
             return 0
+
         else:
-            for tweet in Data.data:
+            for tweet in training_data:
                 for j in range(len(tweet)-1):
-                    if len(tweet[j].split(" ")) > 1 and tweet[j].split(" ")[1] == a:
-                        countA +=1
-                        if tweet[j+1].split(" ")[1] == b:
-                            countAB +=1
-        result = float(countAB/countA)
-        data_dict[(a,b)] = result
+                    if len(tweet[j].split(" ")) > 1 and tweet[j].split(" ")[1] == state1:
+                        count_state1 += 1
+                        if tweet[j+1].split(" ")[1] == state2:
+                            count_transition += 1
+
+        result = float(count_transition/count_state1)
+        trans_dict[(state1, state2)] = result
         return result
 
 # def get_Ysequence(tweet,Data):
@@ -64,84 +72,96 @@ def trans_prob(a,b,Data,data_dict):
 #     score_dict = {}
 #     return viterbi_end(tweet,emis_dict,trans_dict,Data,score_dict)
 
-def viterbi_label(inpath,Datapath,os):
+def viterbi_label(dev_datapath, training_datapath, os):
     trans_dict = {}
     emis_dict = {}
-    Data = Data_processor(Datapath)
+    training_data = Data_processor(training_datapath).data
+
     if os == "W":
-        outpath = inpath.rsplit("\\",maxsplit=1)[0] + "\\dev.p3.out"
+        outpath = dev_datapath.rsplit("\\",maxsplit=1)[0] + "\\dev.p3.out"
     else:
-        outpath = inpath.rsplit("/",maxsplit=1)[0] + "/dev.p3.out"
-    outfile = open(outpath,'w',encoding='utf8')
-    indata = Data_processor(inpath)
-    total = len(indata.data)
-    for tweet in range(len(indata.data)):
+        outpath = dev_datapath.rsplit("/",maxsplit=1)[0] + "/dev.p3.out"
+
+    outfile = open(outpath, 'w', encoding='utf8')
+    dev_data = Data_processor(dev_datapath).data
+    total_tweets = len(dev_data)
+
+    for tweet in range(total_tweets):
         score_dict = {}
-        opYseq = viterbi_end(indata.data[tweet],emis_dict,trans_dict,Data,score_dict)
-        for i in range(len(opYseq[0].split(" "))):
-            output = indata.data[tweet][i] + " " + opYseq[0].split(" ")[i] + "\n"
+        opt_y_seq = viterbi_end(dev_data[tweet], emis_dict, trans_dict, training_data, score_dict)
+        tags = opt_y_seq[0].split(" ")
+        for word in range(len(tags)):
+            output = dev_data[tweet][word] + " " + tags[word] + "\n"
             outfile.write(output)
         outfile.write("\n")
-        print(str(tweet+1)+"/"+str(total)+ " done")
-    print("done!")
+        print(str(tweet+1) + "/" + str(total_tweets) + " done")
+
+    print("Labelling completed!")
     outfile.close()
 
-def viterbi_start(sequence,i,emis_dict,trans_dict,Data,score_dict):
-    if (len(sequence),i) in score_dict.keys():
-        return score_dict[(len(sequence),i)]
+def viterbi_start(sentence, state, emis_dict, trans_dict, training_data, score_dict):
+    if (len(sentence), state) in score_dict.keys():
+        return score_dict[(len(sentence), state)]
     else:
-        score = trans_prob("start",i,Data,trans_dict)*emis_prob(i,sequence[-1],Data,emis_dict)
-        score_dict[(len(sequence),i)] = (i,score)
-        return (i,score)
+        score = trans_prob("start", state, training_data, trans_dict) * emis_prob(state, sentence[-1], training_data, emis_dict)
+        score_dict[(len(sentence), state)] = (state, score)
+        return (state, score)
 
-def viterbi_end(sequence,emis_dict,trans_dict,Data,score_dict):
-    maxY = ""
-    maxScore = 0
-    for i in possible_states:
-        if len(sequence) == 1:
-            previous_max = viterbi_start(sequence,i,emis_dict,trans_dict,Data,score_dict)
+def viterbi_end(sentence, emis_dict, trans_dict, training_data, score_dict):
+    max_y = ""
+    max_score = 0
+
+    for state in possible_states:
+        if len(sentence) == 1:
+            previous_max = viterbi_start(sentence, state, emis_dict, trans_dict, training_data, score_dict)
         else:
-            previous_max = viterbiRecursive(sequence,i,emis_dict,trans_dict,Data,score_dict)
-        score = previous_max[1]*trans_prob(i,"stop",Data,trans_dict)
-        if score > maxScore:
-            maxY = previous_max[0]
-            maxScore = score
-    if maxY == "":
-        previous_O = viterbiRecursive(sequence[:-1],"O",emis_dict,trans_dict,Data,score_dict)
-        maxY = previous_O[0]
-        maxScore = 0
-    return (maxY,maxScore)
+            previous_max = viterbi_recursive(sentence, state, emis_dict, trans_dict, training_data, score_dict)
+        score = previous_max[1] * trans_prob(state, "stop", training_data, trans_dict)
+        if score > max_score:
+            max_y = previous_max[0]
+            max_score = score
 
-def viterbiRecursive(sequence,i,emis_dict,trans_dict,Data,score_dict):
-    if (len(sequence),i) in score_dict.keys():
-        return score_dict[(len(sequence),i)]
+    if max_y == "":
+        previous_O = viterbi_recursive(sentence[:-1], "O", emis_dict, trans_dict, training_data, score_dict)
+        max_y = previous_O[0]
+        max_score = 0
+    return (max_y, max_score)
+
+def viterbi_recursive(sentence, state, emis_dict, trans_dict, training_data, score_dict):
+    if (len(sentence),state) in score_dict.keys():
+        return score_dict[(len(sentence), state)]
     else:
-        maxY = ""
-        maxScore = 0
-        for j in possible_states:
-            if len(sequence) == 2:
-                previous_max = viterbi_start(sequence[:-1],j,emis_dict,trans_dict,Data,score_dict)
+        max_y = ""
+        max_score = 0
+
+        for prev_state in possible_states:
+            if len(sentence) == 2:
+                previous_max = viterbi_start(sentence[:-1], prev_state, emis_dict, trans_dict, training_data, score_dict)
             else:
-                previous_max = viterbiRecursive(sequence[:-1],j,emis_dict,trans_dict,Data,score_dict)
-            score = previous_max[1]*trans_prob(j,i,Data,trans_dict)*emis_prob(i,sequence[-1],Data,emis_dict)
-            if score > maxScore:
-                maxY = previous_max[0] + " " + i
-                maxScore = score
-        if maxY == "":
-            previous_O = viterbiRecursive(sequence[:-1],"O",emis_dict,trans_dict,Data,score_dict)
-            maxY = previous_O[0] + " " + i
-            maxScore = 0
-        score_dict[(len(sequence),i)] = (maxY,maxScore)
-        return (maxY,maxScore)
+                previous_max = viterbi_recursive(sentence[:-1], prev_state, emis_dict, trans_dict, training_data, score_dict)
+            score = previous_max[1] * trans_prob(prev_state, state, training_data, trans_dict) * emis_prob(state, sentence[-1], training_data, emis_dict)
+
+            if score > max_score:
+                max_y = previous_max[0] + " " + state
+                max_score = score
+
+        if max_y == "":
+            previous_O = viterbi_recursive(sentence[:-1], "O", emis_dict, trans_dict, training_data, score_dict)
+            max_y = previous_O[0] + " " + state
+            max_score = 0
+
+        score_dict[(len(sentence), state)] = (max_y, max_score)
+        return (max_y, max_score)
 
 # testtweet = ['"Mike"', 'Update', ':', 'It', 'has', 'been', 'awhile', 'since', 'I', 'spoke', 'of', 'my', 'friend', '"Mike"', '.', '�', 'Things', 'have', 'gotten', 'a', 'little', 'more', 'relaxed', 'sin', '...', 'http://bit.ly/aziC6H']
 # testtweet = ["New","Year",",","New","Tech","Writers","Gathering","http://nblo.gs/cR1A1"]
 # print(get_Ysequence(testtweet,EN))
-if len(sys.argv)< 4:
-    print("Not enought arguments pls input in order:(input data set path, Traning file path, Windows('W') or Linux/Mac('L'))")
+
+if len(sys.argv) < 4:
+    print("Not enough arguments pls input in order: (input data file path, training data file path, 'W'(for Windows) or 'L'(for Linux/Mac)")
     sys.exit()
 
-viterbi_label(sys.argv[1],sys.argv[2],sys.argv[3])
+viterbi_label(sys.argv[1], sys.argv[2], sys.argv[3])
 
 # EN = "C:\\Users\\Loo Yi\\Desktop\\ml-project\\EN\\train"
 # EN_in = "C:\\Users\\Loo Yi\\Desktop\\ml-project\\EN\\dev.in"
