@@ -4,6 +4,7 @@ sys.setrecursionlimit(2000)
 
 possible_states = ["O", "B-positive", "I-positive", "B-neutral", "I-neutral", "B-negative", "I-negative"]
 
+
 def emis_prob(state, word, training_data, emis_dict):
     if (state, word) in emis_dict.keys():
         return emis_dict[(state, word)]
@@ -28,6 +29,7 @@ def emis_prob(state, word, training_data, emis_dict):
 
         emis_dict[(state, word)] = result
         return result
+
 
 def trans_prob(state1, state2, training_data, trans_dict):
     if (state1, state2) in trans_dict.keys():
@@ -66,11 +68,6 @@ def trans_prob(state1, state2, training_data, trans_dict):
         trans_dict[(state1, state2)] = result
         return result
 
-# def get_Ysequence(tweet,Data):
-#     trans_dict = {}
-#     emis_dict = {}
-#     score_dict = {}
-#     return viterbi_end(tweet,emis_dict,trans_dict,Data,score_dict)
 
 def viterbi_label(dev_datapath, training_datapath, os):
     trans_dict = {}
@@ -99,6 +96,7 @@ def viterbi_label(dev_datapath, training_datapath, os):
     print("Labelling completed!")
     outfile.close()
 
+
 def viterbi_start(sequence, state, emis_dict, trans_dict, training_data, score_dict):
     if (len(sequence), state) in score_dict.keys():
         return score_dict[(len(sequence), state)]
@@ -106,6 +104,7 @@ def viterbi_start(sequence, state, emis_dict, trans_dict, training_data, score_d
         score = trans_prob("start", state, training_data, trans_dict) * emis_prob(state, sequence[-1], training_data, emis_dict)
         score_dict[(len(sequence), state)] = (state, score)
         return (state, score)
+
 
 def viterbi_end(sequence, emis_dict, trans_dict, training_data, score_dict):
     max_y = ""
@@ -126,6 +125,7 @@ def viterbi_end(sequence, emis_dict, trans_dict, training_data, score_dict):
         max_y = previous_O[0]
         max_score = 0
     return (max_y, max_score)
+
 
 def viterbi_recursive(sequence, state, emis_dict, trans_dict, training_data, score_dict):
     if (len(sequence),state) in score_dict.keys():
@@ -153,20 +153,9 @@ def viterbi_recursive(sequence, state, emis_dict, trans_dict, training_data, sco
         score_dict[(len(sequence), state)] = (max_y, max_score)
         return (max_y, max_score)
 
-# testtweet = ['"Mike"', 'Update', ':', 'It', 'has', 'been', 'awhile', 'since', 'I', 'spoke', 'of', 'my', 'friend', '"Mike"', '.', '�', 'Things', 'have', 'gotten', 'a', 'little', 'more', 'relaxed', 'sin', '...', 'http://bit.ly/aziC6H']
-# testtweet = ["New","Year",",","New","Tech","Writers","Gathering","http://nblo.gs/cR1A1"]
-# print(get_Ysequence(testtweet,EN))
 
 if len(sys.argv) < 4:
     print("Not enough arguments pls input in order: (input data file path, training data file path, 'W'(for Windows) or 'L'(for Linux/Mac)")
     sys.exit()
 
 viterbi_label(sys.argv[1], sys.argv[2], sys.argv[3])
-
-# EN = "C:\\Users\\Loo Yi\\Desktop\\ml-project\\EN\\train"
-# EN_in = "C:\\Users\\Loo Yi\\Desktop\\ml-project\\EN\\dev.in"
-# ES = "C:\\Users\\Loo Yi\\Desktop\\ml-project\\ES\\train"
-# ES_in = "C:\\Users\\Loo Yi\\Desktop\\ml-project\\ES\\dev.in"
-#
-# viterbi_label(EN_in,EN,"W")
-# viterbi_label(ES_in,ES,"W")

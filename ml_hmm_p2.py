@@ -3,6 +3,7 @@ import sys
 
 possible_states = ["O", "B-positive", "I-positive", "B-neutral", "I-neutral", "B-negative", "I-negative"]
 
+
 def emis_prob(state, word, training_data):
     count_emission = 0 # count the emission from state to word
     count_state = 1
@@ -21,6 +22,7 @@ def emis_prob(state, word, training_data):
 
     return float(count_emission/count_state)
 
+
 def find_opt_y(word, training_data):
     best_y_score = 0
     opt_y = ""
@@ -30,6 +32,7 @@ def find_opt_y(word, training_data):
             best_y_score = y_score
             opt_y = state
     return opt_y
+
 
 def label_dev_data(dev_datapath, training_datapath, os):
     y_dict = {} # dictionary storing the optimal state (y) of each word (x)
@@ -58,6 +61,7 @@ def label_dev_data(dev_datapath, training_datapath, os):
 
     print("Labelling completed!")
     outfile.close()
+
 
 if len(sys.argv) < 4:
     print("Not enough arguments pls input in order: (input data file path, training data file path, 'W'(for Windows) or 'L'(for Linux/Mac)")

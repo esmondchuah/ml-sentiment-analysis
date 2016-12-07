@@ -4,6 +4,7 @@ sys.setrecursionlimit(2000)
 
 possible_states = ["O", "B-positive", "I-positive", "B-neutral", "I-neutral", "B-negative", "I-negative"]
 
+
 def emis_prob(state, word, training_data, emis_dict):
     if (state, word) in emis_dict.keys():
         return emis_dict[(state, word)]
@@ -28,6 +29,7 @@ def emis_prob(state, word, training_data, emis_dict):
 
         emis_dict[(state, word)] = result
         return result
+
 
 def trans_prob(state1, state2, training_data, trans_dict):
     if (state1, state2) in trans_dict.keys():
@@ -66,6 +68,7 @@ def trans_prob(state1, state2, training_data, trans_dict):
         trans_dict[(state1, state2)] = result
         return result
 
+
 def viterbi_topK_kth_label(dev_datapath, training_datapath, k, os):
     trans_dict = {}
     emis_dict = {}
@@ -97,6 +100,7 @@ def viterbi_topK_kth_label(dev_datapath, training_datapath, k, os):
     print("Labelling completed!")
     outfile.close()
 
+
 def viterbi_topK_start(sequence, state, emis_dict, trans_dict, training_data, score_dict):
     if (len(sequence), state) in score_dict.keys():
         return score_dict[(len(sequence), state)]
@@ -104,6 +108,7 @@ def viterbi_topK_start(sequence, state, emis_dict, trans_dict, training_data, sc
         score = trans_prob("start", state, training_data, trans_dict) * emis_prob(state, sequence[-1], training_data, emis_dict)
         score_dict[(len(sequence), state)] = [(state, score)]
         return [(state, score)]
+
 
 def viterbi_topK_end(sequence, k, emis_dict, trans_dict, training_data, score_dict):
     top_k_list = []
@@ -166,10 +171,6 @@ def viterbi_topK_recursive(sequence, k, state, emis_dict, trans_dict, training_d
         score_dict[(len(sequence), state)] = k_list
         return k_list
 
-# EN = Data_processor("C:\\Users\\Loo Yi\\Desktop\\ml-project\\EN\\train")
-# EN_in = "C:\\Users\\Loo Yi\\Desktop\\ml-project\\EN\\dev.in"
-# ES = Data_processor("C:\\Users\\Loo Yi\\Desktop\\ml-project\\ES\\train")
-# ES_in = "C:\\Users\\Loo Yi\\Desktop\\ml-project\\ES\\dev.in"
 
 if len(sys.argv) < 5:
     print("Not enough arguments pls input in order: (k-value, input data file path, training data file path, 'W'(for Windows) or 'L'(for Linux/Mac)")
