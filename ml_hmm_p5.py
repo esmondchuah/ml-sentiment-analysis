@@ -1,27 +1,28 @@
-from Data_processor import Data_processor
 import sys
-import re
 sys.setrecursionlimit(2000)
 
 possible_states = ["O","B-positive","I-positive","B-neutral","I-neutral","B-negative","I-negative"]
-
-class Data_processor_p5:
+class Data_processor:
     def __init__(self,path):
-        self.data= []
+        self.datal= []
+        self.data = []
         self.file = open(path,'r',encoding="utf8")
         for i in self.file.read().split("\n\n") :
             sentence = []
+            unlabeled = []
             for j in i.split("\n"):
                 if j != "":
-                    matchObj = re.match(r'^\W*(\w+)',j,re.M|re.I)
-                    if matchObj:
-                        word = matchObj.group(1)
-                        # print(word)
+                    unlabeled.append(j)
+                    word = j.split(" ")[0].lower()
+                    if len(word) > 5 and word[:4] == "http":
+                        word = word[:4]
+                    if len(j.split(" ")) >1:
+                        sentence.append(word + " " +j.split(" ")[-1])
                     else:
-                        word = j
-                    sentence.append(word.lower() + " " + j.split(" ")[-1])
+                        sentence.append(word)
             if len(sentence) > 0:
                 self.data.append(sentence)
+                self.datal.append(unlabeled)
         self.file.close()
 
 def emis_prob(a,b,Data,data_dict):
@@ -159,7 +160,7 @@ def viterbip5_label(inpathdev,inpathtest,Datapath,os):
         score_dict = {}
         opYseq = viterbiTrigram_end(indatadev.data[tweet],emis_dict,transAB_dict,transABC_dict,Data,score_dict)
         for i in range(len(opYseq[0].split(" "))):
-            output = indatadev.data[tweet][i] + " " + opYseq[0].split(" ")[i] + "\n"
+            output = indatadev.datal[tweet][i] + " " + opYseq[0].split(" ")[i] + "\n"
             outfiledev.write(output)
         outfiledev.write("\n")
         print("dev " + str(tweet+1)+"/"+str(totaldev)+ " done")
@@ -173,7 +174,7 @@ def viterbip5_label(inpathdev,inpathtest,Datapath,os):
         score_dict = {}
         opYseq = viterbiTrigram_end(indatatest.data[tweet],emis_dict,transAB_dict,transABC_dict,Data,score_dict)
         for i in range(len(opYseq[0].split(" "))):
-            output = indatatest.data[tweet][i] + " " + opYseq[0].split(" ")[i] + "\n"
+            output = indatatest.datal[tweet][i] + " " + opYseq[0].split(" ")[i] + "\n"
             outfiletest.write(output)
         outfiletest.write("\n")
         print("test "+ str(tweet+1)+"/"+str(totaltest)+ " done")
@@ -194,7 +195,7 @@ def viterbiTrigram_end(sequence,emis_dict,transAB_dict,transABC_dict,Data,score_
     for i in possible_states:
         if len(sequence) == 1:
             previous_max = viterbiTrigram_start(sequence,i,emis_dict,transAB_dict,Data,score_dict)
-            print(previous_max)
+            # print(previous_max)
             score = previous_max[0][1]*transAB_prob(i,"stop",Data,transAB_dict)
             if score > maxScore:
                 maxY = previous_max[0][0]
@@ -239,7 +240,7 @@ def viterbiTrigramRecursive(sequence,i,emis_dict,transAB_dict,transABC_dict,Data
         score_dict[(len(sequence),i)] = state_list
         return state_list
 
-testtweet = ["New","Year",",","New","Tech","Writers","Gathering","http://nblo.gs/cR1A1"]
+
 EN = "C:\\Users\\Loo Yi\\Desktop\\ml-project\\EN\\train"
 EN_in = "C:\\Users\\Loo Yi\\Desktop\\ml-project\\EN\\dev.in"
 EN_in_test = "C:\\Users\\Loo Yi\\Desktop\\ml-project\\EN_p5\\test.in"
@@ -253,6 +254,4 @@ ES_in_test = "C:\\Users\\Loo Yi\\Desktop\\ml-project\\ES_p5\\test.in"
 # score_dict = {}
 # print(viterbiTrigram_end(testtweet,emis_dict,transAB_dict,transABC_dict,EN_Data,score_dict))
 # print(EN_Data.data[2])
-viterbip5_label(ES_in,ES_in_test,ES,"W")
-viterbip5_label(EN_in,EN_in_test,EN,"W")
 viterbip5_label(ES_in,ES_in_test,ES,"W")

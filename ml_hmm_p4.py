@@ -2,156 +2,177 @@ from Data_processor import Data_processor
 import sys
 sys.setrecursionlimit(2000)
 
-possible_states = ["O","B-positive","I-positive","B-neutral","I-neutral","B-negative","I-negative"]
+possible_states = ["O", "B-positive", "I-positive", "B-neutral", "I-neutral", "B-negative", "I-negative"]
 
-def emis_prob(a,b,Data,data_dict):
-    if (a,b) in data_dict.keys():
-        return data_dict[(a,b)]
+def emis_prob(state, word, training_data, emis_dict):
+    if (state, word) in emis_dict.keys():
+        return emis_dict[(state, word)]
     else:
-        countAB = 0
-        countA = 1
-        countB = 0
-        for tweet in Data.data:
+        count_emission = 0 # count the emission from state to word
+        count_state = 1
+        count_word = 0
+
+        for tweet in training_data:
             for j in range(len(tweet)):
-                if tweet[j].split(" ")[0] == b:
-                    countB +=1
-                if tweet[j].split(" ")[1] == a:
-                    countA +=1
-                    if tweet[j].split(" ")[0] == b:
-                        countAB +=1
-        if countB == 0:
-            result =  float(1/countA)
+                if tweet[j].split(" ")[0] == word:
+                    count_word += 1
+                if tweet[j].split(" ")[1] == state:
+                    count_state += 1
+                    if tweet[j].split(" ")[0] == word:
+                        count_emission += 1
+
+        if count_word == 0:
+            result =  float(1/count_state)
         else:
-            result = float(countAB/countA)
-        data_dict[(a,b)] = result
+            result = float(count_emission/count_state)
+
+        emis_dict[(state, word)] = result
         return result
 
-def trans_prob(a,b,Data,data_dict):
-    if (a,b) in data_dict.keys():
-        return data_dict[(a,b)]
+def trans_prob(state1, state2, training_data, trans_dict):
+    if (state1, state2) in trans_dict.keys():
+        return trans_dict[(state1, state2)]
     else:
-        countAB = 0
-        countA = 0
-        if a == 'start':
-            countA = len(Data.data)
-            for tweet in Data.data:
-                if len(tweet[0].split(" ")) > 1 and tweet[0].split(" ")[1] == b:
-                    countAB += 1
-        elif b == 'stop':
-            for tweet in Data.data:
+        count_transition = 0 # count the transition from state1 to state 2
+        count_state1 = 0
+
+        if state1 == 'start':
+            count_state1 = len(training_data)
+            for tweet in training_data:
+                if len(tweet[0].split(" ")) > 1 and tweet[0].split(" ")[1] == state2:
+                    count_transition += 1
+
+        elif state2 == 'stop':
+            for tweet in training_data:
                 for j in range(len(tweet)):
-                    if len(tweet[j].split(" ")) > 1 and tweet[j].split(" ")[1] == a:
-                        countA +=1
-                        if j == len(tweet)-1:
-                            countAB +=1
-        elif a == 'stop' or b == 'start':
-            data_dict[(a,b)] = 0
+                    if len(tweet[j].split(" ")) > 1  and tweet[j].split(" ")[1] == state1:
+                        count_state1 += 1
+                        if j == len(tweet) - 1:
+                            count_transition += 1
+
+        elif state1 == 'stop' or state2 == 'start':
+            trans_dict[(state1, state2)] = 0
             return 0
+
         else:
-            for tweet in Data.data:
+            for tweet in training_data:
                 for j in range(len(tweet)-1):
-                    if len(tweet[j].split(" ")) > 1 and tweet[j].split(" ")[1] == a:
-                        countA +=1
-                        if tweet[j+1].split(" ")[1] == b:
-                            countAB +=1
-        result = float(countAB/countA)
-        data_dict[(a,b)] = result
+                    if len(tweet[j].split(" ")) > 1 and tweet[j].split(" ")[1] == state1:
+                        count_state1 += 1
+                        if tweet[j+1].split(" ")[1] == state2:
+                            count_transition += 1
+
+        result = float(count_transition/count_state1)
+        trans_dict[(state1, state2)] = result
         return result
 
-def viterbiTopk_kthlabel(inpath,Datapath,k,os):
+def viterbi_topK_kth_label(dev_datapath, training_datapath, k, os):
     trans_dict = {}
     emis_dict = {}
-    Data = Data_processor(Datapath)
+    training_data = Data_processor(training_datapath).data
+
     if os == "W":
-        outpath = inpath.rsplit("\\",maxsplit=1)[0] + "\\dev.p4.out"
+        outpath = dev_datapath.rsplit("\\",maxsplit=1)[0] + "\\dev.p4.out"
     else:
-        outpath = inpath.rsplit("/",maxsplit=1)[0] + "/dev.p4.out"
-    outfile = open(outpath,'w',encoding='utf8')
-    indata = Data_processor(inpath)
-    total = len(indata.data)
-    for tweet in range(len(indata.data)):
+        outpath = dev_datapath.rsplit("/",maxsplit=1)[0] + "/dev.p4.out"
+
+    outfile = open(outpath, 'w', encoding='utf8')
+    dev_data = Data_processor(dev_datapath).data
+    total_tweets = len(dev_data)
+
+    for tweet in range(total_tweets):
         score_dict = {}
-        TopKlist = viterbiTopk_end(indata.data[tweet],k,emis_dict,trans_dict,Data,score_dict)
-        TopKlist = sorted(TopKlist,key=lambda x:x[1])
-        Kth_seq = TopKlist[0]
-        for i in range(len(Kth_seq[0].split(" "))):
-            output = indata.data[tweet][i] + " " + Kth_seq[0].split(" ")[i] + "\n"
+        top_k_list = viterbi_topK_end(dev_data[tweet], k, emis_dict, trans_dict, training_data, score_dict)
+        top_k_list = sorted(top_k_list, key=lambda x:x[1])
+        kth_seq = top_k_list[0]
+        tags = kth_seq[0].split(" ")
+
+        for word in range(len(tags)):
+            output = dev_data[tweet][word] + " " + tags[word] + "\n"
             outfile.write(output)
+
         outfile.write("\n")
-        print(str(tweet+1)+"/"+str(total)+ " done")
-    print("done!")
+        print(str(tweet+1) + "/" + str(total_tweets) + " done")
+
+    print("Labelling completed!")
     outfile.close()
 
-def viterbiTopK_start(sequence,i,emis_dict,trans_dict,Data,score_dict):
-    if (len(sequence),i) in score_dict.keys():
-        return score_dict[(len(sequence),i)]
+def viterbi_topK_start(sequence, state, emis_dict, trans_dict, training_data, score_dict):
+    if (len(sequence), state) in score_dict.keys():
+        return score_dict[(len(sequence), state)]
     else:
-        score = trans_prob("start",i,Data,trans_dict)*emis_prob(i,sequence[-1],Data,emis_dict)
-        score_dict[(len(sequence),i)] = [(i,score)]
-        return [(i,score)]
+        score = trans_prob("start", state, training_data, trans_dict) * emis_prob(state, sequence[-1], training_data, emis_dict)
+        score_dict[(len(sequence), state)] = [(state, score)]
+        return [(state, score)]
 
-def viterbiTopk_end(sequence,k,emis_dict,trans_dict,Data,score_dict):
-    TopKlist = []
-    for i in possible_states:
+def viterbi_topK_end(sequence, k, emis_dict, trans_dict, training_data, score_dict):
+    top_k_list = []
+
+    for state in possible_states:
         if len(sequence) == 1:
-            previous_list = viterbiTopK_start(sequence,i,emis_dict,trans_dict,Data,score_dict)
+            previous_list = viterbi_topK_start(sequence, state, emis_dict, trans_dict, training_data, score_dict)
         else:
-            previous_list = viterbiTopkRecursive(sequence,k,i,emis_dict,trans_dict,Data,score_dict)
+            previous_list = viterbi_topK_recursive(sequence, k, state, emis_dict, trans_dict, training_data, score_dict)
+
         for j in previous_list:
-            score = j[1]*trans_prob(i,"stop",Data,trans_dict)
+            score = j[1] * trans_prob(state, "stop", training_data, trans_dict)
             if score != 0:
-                if len(TopKlist) < k:
-                    TopKlist.append((j[0],score))
+                if len(top_k_list) < k:
+                    top_k_list.append((j[0], score))
                 else:
                     index = 0
-                    for l in range(1,len(TopKlist)):
-                        if TopKlist[l][1] < TopKlist[index][1]:
+                    for l in range(1, len(top_k_list)):
+                        if top_k_list[l][1] < top_k_list[index][1]:
                             index = l
-                    if score > TopKlist[index][1]:
-                        TopKlist[index] = (j[0],score)
-    if len(TopKlist) == 0:
-        previous_Olist = viterbiTopkRecursive(sequence,k,"O",emis_dict,trans_dict,Data,score_dict)
-        TopKlist.append((previous_Olist[0][0],0))
-    return TopKlist
+                    if score > top_k_list[index][1]:
+                        top_k_list[index] = (j[0], score)
+
+    if len(top_k_list) == 0:
+        previous_O_list = viterbi_topK_recursive(sequence, k, "O", emis_dict, trans_dict, training_data, score_dict)
+        top_k_list.append((previous_O_list[0][0],0))
+    return top_k_list
 
 
-def viterbiTopkRecursive(sequence,k,i,emis_dict,trans_dict,Data,score_dict):
-    if (len(sequence),i) in score_dict.keys():
-        return score_dict[(len(sequence),i)]
+def viterbi_topK_recursive(sequence, k, state, emis_dict, trans_dict, training_data, score_dict):
+    if (len(sequence), state) in score_dict.keys():
+        return score_dict[(len(sequence), state)]
     else:
-        K_list = []
-        for j in possible_states:
+        k_list = []
+        for prev_state in possible_states:
             if len(sequence) == 2:
-                previous_list = viterbiTopK_start(sequence[:-1],j,emis_dict,trans_dict,Data,score_dict)
+                previous_list = viterbi_topK_start(sequence[:-1], prev_state, emis_dict, trans_dict, training_data, score_dict)
             else:
-                previous_list = viterbiTopkRecursive(sequence[:-1],k,j,emis_dict,trans_dict,Data,score_dict)
+                previous_list = viterbi_topK_recursive(sequence[:-1], k, prev_state, emis_dict, trans_dict, training_data, score_dict)
+
             for z in previous_list:
-                score = z[1]*trans_prob(j,i,Data,trans_dict)*emis_prob(i,sequence[-1],Data,emis_dict)
-                Yseq = z[0] + " " + i
+                score = z[1] * trans_prob(prev_state, state, training_data, trans_dict) * emis_prob(state, sequence[-1], training_data, emis_dict)
+                y_seq = z[0] + " " + state
                 if score != 0:
-                    if len(K_list) < k:
-                        K_list.append((Yseq,score))
+                    if len(k_list) < k:
+                        k_list.append((y_seq, score))
                     else:
-                        K_index = 0
-                        for l in range(1,len(K_list)):
-                            if K_list[l][1] < K_list[K_index][1]:
-                                K_index = l
-                        if score > K_list[K_index][1]:
-                            K_list[K_index] = (Yseq,score)
-        if len(K_list) == 0:
-            previous_Olist = viterbiTopkRecursive(sequence[:-1],k,"O",emis_dict,trans_dict,Data,score_dict)
-            Yseq = previous_Olist[0][0] + " " + i
-            K_list.append((Yseq,0))
-        score_dict[(len(sequence),i)] = K_list
-        return K_list
+                        k_index = 0
+                        for l in range(1, len(k_list)):
+                            if k_list[l][1] < k_list[k_index][1]:
+                                k_index = l
+                        if score > k_list[k_index][1]:
+                            k_list[k_index] = (y_seq, score)
+
+        if len(k_list) == 0:
+            previous_O_list = viterbi_topK_recursive(sequence[:-1], k, "O", emis_dict, trans_dict, training_data, score_dict)
+            y_seq = previous_O_list[0][0] + " " + state
+            k_list.append((y_seq, 0))
+
+        score_dict[(len(sequence), state)] = k_list
+        return k_list
 
 # EN = Data_processor("C:\\Users\\Loo Yi\\Desktop\\ml-project\\EN\\train")
 # EN_in = "C:\\Users\\Loo Yi\\Desktop\\ml-project\\EN\\dev.in"
 # ES = Data_processor("C:\\Users\\Loo Yi\\Desktop\\ml-project\\ES\\train")
 # ES_in = "C:\\Users\\Loo Yi\\Desktop\\ml-project\\ES\\dev.in"
 
-if len(sys.argv)< 5:
-    print("Not enought arguments pls input in order:(kvalue,input data set path, Traning file path, Windows('W') or Linux/Mac('L'))")
+if len(sys.argv) < 5:
+    print("Not enough arguments pls input in order: (k-value, input data file path, training data file path, 'W'(for Windows) or 'L'(for Linux/Mac)")
     sys.exit()
 
-viterbiTopk_kthlabel(sys.argv[2],sys.argv[3],int(sys.argv[1]),sys.argv[4])
+viterbi_topK_kth_label(sys.argv[2],sys.argv[3],int(sys.argv[1]),sys.argv[4])
