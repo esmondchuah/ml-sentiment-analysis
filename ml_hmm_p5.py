@@ -120,9 +120,6 @@ def trans_prob_ABC(a,b,c,Data,data_dict):
 
 def viterbip5_label(inpathdev,Datapath,filename,os):
     Data = Data_processor(Datapath)
-    # Datacount = Data_processor_prepross(Datapath)
-    # weight_map = getWeight(Data,50)
-    # print ("training done!")
     if os == "W":
         outpathdev = inpathdev.rsplit("\\",maxsplit=1)[0] + "\\" + filename)
     else:
@@ -130,7 +127,6 @@ def viterbip5_label(inpathdev,Datapath,filename,os):
 
     outfiledev = open(outpathdev,'w',encoding='utf8')
     indatadev = Data_processor(inpathdev)
-    # indatadevlabel = Data_processor(inpathdev)
     totaldev = len(indatadev.data)
     transAB_dict = {}
     transABC_dict = {}
