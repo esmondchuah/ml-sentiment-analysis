@@ -7,11 +7,11 @@ A Sentiment Analysis projects of various tweets in English, Spanish and Chinese 
 
 On Windows:
 ````
-python ml_hmm_p2.py {path to input data file} {path to training data} W
+python ml_hmm_p2.py {path to input data file} {path to training data file} W
 ````
 On MacOS/Linux:
 ````
-python3 ml_hmm_p2.py {path to input data file} {path to training data} L
+python3 ml_hmm_p2.py {path to input data file} {path to training data file} L
 ````
 
 
@@ -20,22 +20,22 @@ python3 ml_hmm_p2.py {path to input data file} {path to training data} L
 
 On Windows:
 ````
-python ml_hmm_p3.py {path to input data file} {path to training data} W
+python ml_hmm_p3.py {path to input data file} {path to training data file} W
 ````
 On MacOS/Linux:
 ````
-python3 ml_hmm_p3.py {path to input data file} {path to training data} L
+python3 ml_hmm_p3.py {path to input data file} {path to training data file} L
 ````
 
 
 ### Part 4 : Getting k-th best Y sequence in Viterbi
 On Windows:
 ````
-python ml_hmm_p4.py {k value} {path to input data file} {path to training data} W
+python ml_hmm_p4.py {k value} {path to input data file} {path to training data file} W
 ````
 On MacOS/Linux:
 ````
-python3 ml_hmm_p4.py {k_value} {path to input data file} {path to training data} L
+python3 ml_hmm_p4.py {k_value} {path to input data file} {path to training data file} L
 ````
 
 Do note that the output file will be written in the same directory as the input data.
