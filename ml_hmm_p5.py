@@ -2,6 +2,7 @@ import sys
 sys.setrecursionlimit(2000)
 
 possible_states = ["O","B-positive","I-positive","B-neutral","I-neutral","B-negative","I-negative"]
+
 class Data_processor:
     def __init__(self,path):
         self.datal= []
@@ -116,39 +117,17 @@ def trans_prob_ABC(a,b,c,Data,data_dict):
         data_dict[(a,b,c)] = result
         return result
 
-def viterbi_label(inpathdev,inpathtest,Datapath,os):
-    trans_dict = {}
-    emis_dict = {}
-    Data = Data_processor(Datapath)
-    if os == "W":
-        outpath = inpath.rsplit("\\",maxsplit=1)[0] + "\\dev.p5.out"
-    else:
-        outpath = inpath.rsplit("/",maxsplit=1)[0] + "/dev.p5.out"
-    outfile = open(outpath,'w',encoding='utf8')
-    indata = Data_processor(inpath)
-    total = len(indata.data)
-    for tweet in range(len(indata.data)):
-        score_dict = {}
-        opYseq = viterbi_end(indata.data[tweet],emis_dict,trans_dict,Data,score_dict)
-        for i in range(len(opYseq[0].split(" "))):
-            output = indata.data[tweet][i] + " " + opYseq[0].split(" ")[i] + "\n"
-            outfile.write(output)
-        outfile.write("\n")
-        print(str(tweet+1)+"/"+str(total)+ " done")
-    print("done!")
-    outfile.close()
 
-def viterbip5_label(inpathdev,inpathtest,Datapath,os):
+def viterbip5_label(inpathdev,Datapath,filename,os):
     Data = Data_processor(Datapath)
     # Datacount = Data_processor_prepross(Datapath)
     # weight_map = getWeight(Data,50)
     # print ("training done!")
     if os == "W":
-        outpathdev = inpathdev.rsplit("\\",maxsplit=1)[0] + "\\dev.p5.out"
-        outpathtest = inpathtest.rsplit("\\",maxsplit=1)[0] + "\\test.p5.out"
+        outpathdev = inpathdev.rsplit("\\",maxsplit=1)[0] + "\\" + filename)
     else:
-        outpathdev = inpathdev.rsplit("/",maxsplit=1)[0] + "/dev.p5.out"
-        outpathtest = inpathtest.rsplit("/",maxsplit=1)[0] + "/test.p5.out"
+        outpathdev = inpathdev.rsplit("/",maxsplit=1)[0] + "/" + filename
+
     outfiledev = open(outpathdev,'w',encoding='utf8')
     indatadev = Data_processor(inpathdev)
     # indatadevlabel = Data_processor(inpathdev)
@@ -164,22 +143,9 @@ def viterbip5_label(inpathdev,inpathtest,Datapath,os):
             outfiledev.write(output)
         outfiledev.write("\n")
         print("dev " + str(tweet+1)+"/"+str(totaldev)+ " done")
-    print("dev done!")
+    print("Labelling done!")
     outfiledev.close()
-    outfiletest = open(outpathtest,'w',encoding='utf8')
-    indatatest = Data_processor(inpathtest)
-    # indatatestlabel = Data_processor(inpathtest)
-    totaltest = len(indatatest.data)
-    for tweet in range(len(indatatest.data)):
-        score_dict = {}
-        opYseq = viterbiTrigram_end(indatatest.data[tweet],emis_dict,transAB_dict,transABC_dict,Data,score_dict)
-        for i in range(len(opYseq[0].split(" "))):
-            output = indatatest.datal[tweet][i] + " " + opYseq[0].split(" ")[i] + "\n"
-            outfiletest.write(output)
-        outfiletest.write("\n")
-        print("test "+ str(tweet+1)+"/"+str(totaltest)+ " done")
-    print("test done!")
-    outfiletest.close()
+
 
 def viterbiTrigram_start(sequence,i,emis_dict,trans_dict,Data,score_dict):
     if (len(sequence),i) in score_dict.keys():
@@ -240,18 +206,8 @@ def viterbiTrigramRecursive(sequence,i,emis_dict,transAB_dict,transABC_dict,Data
         score_dict[(len(sequence),i)] = state_list
         return state_list
 
+if len(sys.argv) < 5:
+    print("Not enough arguments pls input in order: (input data file path, training data file path, name of file,'W'(for Windows) or 'L'(for Linux/Mac)")
+    sys.exit()
 
-EN = "C:\\Users\\Loo Yi\\Desktop\\ml-project\\EN\\train"
-EN_in = "C:\\Users\\Loo Yi\\Desktop\\ml-project\\EN\\dev.in"
-EN_in_test = "C:\\Users\\Loo Yi\\Desktop\\ml-project\\EN_p5\\test.in"
-ES = "C:\\Users\\Loo Yi\\Desktop\\ml-project\\ES\\train"
-ES_in = "C:\\Users\\Loo Yi\\Desktop\\ml-project\\ES\\dev.in"
-ES_in_test = "C:\\Users\\Loo Yi\\Desktop\\ml-project\\ES_p5\\test.in"
-# EN_Data = Data_processor(EN)
-# emis_dict = {}
-# transAB_dict = {}
-# transABC_dict = {}
-# score_dict = {}
-# print(viterbiTrigram_end(testtweet,emis_dict,transAB_dict,transABC_dict,EN_Data,score_dict))
-# print(EN_Data.data[2])
-viterbip5_label(ES_in,ES_in_test,ES,"W")
+viterbip5_label(sys.argv[1], sys.argv[2], sys.argv[3], sys.argv[4])
